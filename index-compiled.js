@@ -25,12 +25,12 @@ app.use(bodyParser.json());
 
 // index
 app.get('/', function (req, res) {
-	res.send('1604443954');
+	res.send('hello world i am a secret bot');
 });
 
 // for facebook verification
 app.get('/webhook/', function (req, res) {
-	if (req.query['hub.verify_token'] === 'ridechat_token') {
+	if (req.query['hub.verify_token'] === 'RIDECHAT_TOKEN') {
 		res.send(req.query['hub.challenge']);
 	} else {
 		res.send('Error, wrong token');
