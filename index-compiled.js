@@ -67,7 +67,6 @@ const token = process.env.RIDECHAT_TOKEN;
 
 function sendTextMessage(sender, text) {
 	let messageData = { text: text };
-
 	request({
 		url: 'https://graph.facebook.com/v2.6/me/messages',
 		qs: { access_token: token },

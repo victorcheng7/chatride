@@ -10,23 +10,24 @@ i have added console.log on line 48
  */
 'use strict'
 
-const express = require('express')
-const bodyParser = require('body-parser')
-const request = require('request')
-const app = express()
+const express = require('express');
+const bodyParser = require('body-parser');
+const request = require('request');
+const app = express();
+const pg = require('pg');
 
-app.set('port', (process.env.PORT || 5000))
+app.set('port', (process.env.PORT || 5000));
 
 // parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({extended: false}))
+app.use(bodyParser.urlencoded({extended: false}));
 
 // parse application/json
-app.use(bodyParser.json())
+app.use(bodyParser.json());
 
 // index
 app.get('/', function (req, res) {
 	res.send('hello world i am a secret bot')
-})
+});
 
 // for facebook verification
 app.get('/webhook/', function (req, res) {
@@ -35,7 +36,7 @@ app.get('/webhook/', function (req, res) {
 	} else {
 		res.send('Error, wrong token')
 	}
-})
+});
 
 // to post data
 app.post('/webhook/', function (req, res) {
@@ -59,7 +60,18 @@ app.post('/webhook/', function (req, res) {
 		}
 	}
 	res.sendStatus(200)
-})
+});
+
+
+const connectionString = process.env.DATABASE_URL;
+pg.connect(connectionString, function(err, client, done) {
+	console.log(err+"!!!!!!!!!!!!!!!");
+	client.query('SELECT * FROM users', function(err, result) {
+		done();
+		if(err) return console.error(err);
+		console.log(result.rows);
+	});
+});
 
 
 // recommended to inject access tokens as environmental variables, e.g.
@@ -68,7 +80,6 @@ const token = process.env.RIDECHAT_TOKEN
 
 function sendTextMessage(sender, text) {
 	let messageData = { text:text }
-	
 	request({
 		url: 'https://graph.facebook.com/v2.6/me/messages',
 		qs: {access_token:token},
