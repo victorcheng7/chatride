@@ -73,8 +73,6 @@ app.get('/webhook/', function (req, res) {
 	}
 });
 
-
-
 app.post('/webhook/', function (req, res) {
 
 	let messaging_events = req.body.entry[0].messaging;
@@ -84,15 +82,13 @@ app.post('/webhook/', function (req, res) {
 		let state = 0;
 		//MAKE THIS sender and messenger_id
 		pool.query('SELECT state FROM users WHERE user_id = 1',  function (err, result) {
-			//call `done()` to release the client back to the pool
-			console.log(result);
 			state = result.rows[0].state;
 		});
 
 		if (event.message && event.message.text) {
-			// IF statement logic to see what stage the bot is at.
 			let text = event.message.text;
-			if(state === 1){
+			if(state == 1){
+				console.log("hello");
 				var facebook_urls = [];
 				var array = text.split(','); // send array[0] to esri API -- return coordinates, add array[1] IS DATE
 				console.log(array[1]);
