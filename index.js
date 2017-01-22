@@ -81,7 +81,10 @@ app.post('/webhook/', function (req, res) {
 		let sender = event.sender.id;
 		//MAKE THIS sender and messenger_id
 		pool.query('SELECT state FROM users WHERE user_id = 1',  function (err, result) {
+			console.log(result);
+			console.log(result.rows[0].state);
 			state = result.rows[0].state;
+			console.log(state);
 		});
 		console.log(state);
 		if (event.message && event.message.text) {
