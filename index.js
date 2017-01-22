@@ -40,7 +40,7 @@ pool.connect(function(err, client, done) {
 		if(err) {
 			return console.error('error running query', err);
 		}
-		console.log(result.rows[0].facebook_url);
+		//console.log(result.rows[0].facebook_url);
 		//output: 1
 	});
 });
@@ -90,16 +90,20 @@ app.post('/webhook/', function (req, res) {
 			// IF statement logic to see what stage the bot is at.
 			let text = event.message.text;
 			if(state === 1){
+				var facebook_urls = [];
 				var array = text.split(','); // send array[0] to esri API -- return coordinates, add array[1] IS DATE
 				pool.query('UPDATE users SET state = 2 WHERE user_id = 1 OR message_id=1237576872989203;',function(err, result){
 				});
 				pool.query('SELECT facebook_url, route FROM users WHERE date=$1', [array[1].toString()], function(err, result){
 					console.log(result);
+					//finalize facebook_urls with relevant algorithm
 				});
-				// give me facebook url and route where date = array[1]
-				//search the database where 1) date matches 2) every entry in the database and write route algorithm
-
-				//sendTextMessage   all current fb links that are relevant
+				// filter routes with results THEN return all facebook_urls in array
+				//search the database where  every entry in the database and write route algorithm
+					sendTextMessage(sender, "Below is a list of all people you could reach out to!: ")
+					facebook_urls.forEach(function(element) {
+					   sendTextMessage(sender, element);
+					 });
 			}
 			if (text === 'hey' || text === 'hi' || text === 'whats up' || text === 'yo') {
 				sendTextMessage(sender, "Hey! Where are you trying to go? And at what time? e.g. UCSB, 2017-28-01");
