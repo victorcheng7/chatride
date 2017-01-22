@@ -73,7 +73,6 @@ app.get('/webhook/', function (req, res) {
 
 
 // to post data
-var check = false;
 app.post('/webhook/', function (req, res) {
 	let messaging_events = req.body.entry[0].messaging;
 	for (let i = 0; i < messaging_events.length; i++) {
@@ -83,13 +82,8 @@ app.post('/webhook/', function (req, res) {
 			let text = event.message.text;
 			if(text === 'hey' || text === 'hi' || text === 'whats up' || text ==='yo'){
 				sendTextMessage(sender, "Hey! Where are you trying to go? And at what time? e.g. UCSB, 01/28/2017");
-				continue
-				check = true;
+				continue;
 			}
-			if(check){
-				sendTextMessage(sender, text);
-			}
-
 			if (text === 'Generic'){
 				var array = text.splice(',');
 				console.log("welcome to chatbot")
