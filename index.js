@@ -74,17 +74,16 @@ app.get('/webhook/', function (req, res) {
 });
 
 app.post('/webhook/', function (req, res) {
-
+	let state = 0 ;
 	let messaging_events = req.body.entry[0].messaging;
 	for (let i = 0; i < messaging_events.length; i++) {
 		let event = req.body.entry[0].messaging[i];
 		let sender = event.sender.id;
-		let state = 0;
 		//MAKE THIS sender and messenger_id
 		pool.query('SELECT state FROM users WHERE user_id = 1',  function (err, result) {
 			state = result.rows[0].state;
 		});
-
+		console.log(state);
 		if (event.message && event.message.text) {
 			let text = event.message.text;
 			console.log(state);
