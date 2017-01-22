@@ -82,6 +82,7 @@ app.post('/webhook/', function (req, res) {
 		//MAKE THIS sender and messenger_id
 		pool.query('SELECT state FROM users WHERE user_id = 1',  function (err, result) {
 			state = result.rows[0].state; // STATE IS NOT PROPERLY SET ON THE GLOBAL states
+			console.log(state);
 		});
 
 		console.log(state);
