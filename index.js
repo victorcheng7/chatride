@@ -88,13 +88,14 @@ app.post('/webhook/', function (req, res) {
 			console.log(result);
 			state = result.rows[0].state;
 		});
+
 		if (event.message && event.message.text) {
 			// IF statement logic to see what stage the bot is at.
 			let text = event.message.text;
 			if(state === 1){
 				var facebook_urls = [];
 				var array = text.split(','); // send array[0] to esri API -- return coordinates, add array[1] IS DATE
-				pool.query('UPDATE users SET state = 2 WHERE user_id = 1 OR message_id=1237576872989203;',function(err, result){
+				pool.query('UPDATE users SET state = 2 WHERE user_id = 1 OR message_id=1793179830899605;',function(err, result){
 				});
 				pool.query('SELECT facebook_url, route FROM users WHERE date=$1', [array[1].toString()], function(err, result){
 					console.log(result);
