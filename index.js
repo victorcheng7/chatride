@@ -74,32 +74,43 @@ app.get('/webhook/', function (req, res) {
 });
 
 
+// if
 // to post data
 app.post('/webhook/', function (req, res) {
 	let messaging_events = req.body.entry[0].messaging;
 	for (let i = 0; i < messaging_events.length; i++) {
-		let event = req.body.entry[0].messaging[i]
+		let event = req.body.entry[0].messaging[i];
 		let sender = event.sender.id;
-		let contacted = false;
-		pool.query('SELECT contacted FROM users WHERE message_id =' + sender, function (err, result) {
+		let state = 0;
+		pool.query('SELECT state FROM users WHERE message_id = $1' ,  [sender],  function (err, result) {
 			//call `done()` to release the client back to the pool
-			console.log(result.rows[0].contacted);
-			if (err) {
-				return console.error('error running query', err);
-			}
-			//console.log(result.rows[0].facebook_url);
-			//contacted = false;
+			state = result.rows[0].contacted;
 		});
 		if (event.message && event.message.text) {
+			// IF statement logic to see what stage the bot is at.
 			let text = event.message.text;
-			if (text === 'hey' || text === 'hi' || text === 'whats up' || text === 'yo') {
-				sendTextMessage(sender, "Hey! Where are you trying to go? And at what time? e.g. UCSB, 01/28/2017");
-				continue;
+			if(state === 1){
+				var array = text.split(','); // send array[0] to esri API -- return coordinates, add array[1] IS DATE
+				pool.query('UPDATE users SET state = 2 WHERE user_id = 1 OR message_id=1237576872989203;',function(err, result){
+				});
+				pool.query('SELECT facebook_url, route FROM users WHERE date=$1', [array[1].toString()], function(err, result){
+					console.log(result);
+				});
+				// give me facebook url and route where date = array[1]
+				//search the database where 1) date matches 2) every entry in the database and write route algorithm
+
+				//sendTextMessage   all current fb links that are relevant
 			}
-			if (text === 'Generic') {
-				console.log("welcome to chatbot")
-				sendGenericMessage(sender)
-				continue
+			if (text === 'hey' || text === 'hi' || text === 'whats up' || text === 'yo') {
+				sendTextMessage(sender, "Hey! Where are you trying to go? And at what time? e.g. UCSB, 2017-28-01");
+				pool.query('UPDATE users SET state = 1 WHERE user_id = 1 OR message_id=1237576872989203;',function(err, result){
+				});
+				/*pool.query("INSERT INTO users (facebook_url, date, destination, origin, notified, route) VALUES ('https://www.facebook.com/aaron.veronese?fref=nf', '01/24/2017', POINT(0,0), POINT(0,1), 1, PATH(polygon '(34.414899, -119.84312), (0,0)'));" ,  function(err, result){
+				});
+				*/
+				//contacted = 1, message_id = that person, Facebook URL/id
+				//ALWAYS GOING TO BE NEW USER Final product -- query database to see if that user exists already, add user if not
+				continue;
 			}
 			sendTextMessage(sender, "Sorry not sure what you mean by " + text.substring(0, 200))
 		}
@@ -135,6 +146,15 @@ function sendTextMessage(sender, text) {
 	})
 }
 
+
+/*
+
+ if (text === 'Generic') {
+ console.log("welcome to chatbot")
+ sendGenericMessage(sender)
+ continue
+ }
+ */
 function sendGenericMessage(sender) {
 	let messageData = {
 		"attachment": {
