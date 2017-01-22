@@ -87,7 +87,7 @@ app.post('/webhook/', function (req, res) {
 
 		if (event.message && event.message.text) {
 			let text = event.message.text;
-			if(state == 1){
+			if(state === 1){
 				console.log("hello");
 				var facebook_urls = [];
 				var array = text.split(','); // send array[0] to esri API -- return coordinates, add array[1] IS DATE
@@ -106,7 +106,7 @@ app.post('/webhook/', function (req, res) {
 					   sendTextMessage(sender, element);
 					 });
 			}
-			if (text === 'hey' || text === 'hi' || text === 'whats up' || text === 'yo') {
+			else if (text === 'hey' || text === 'hi' || text === 'whats up' || text === 'yo') {
 				sendTextMessage(sender, "Hey! Where are you trying to go? And at what time? e.g. UCSB, 2017-28-01");
 				pool.query('UPDATE users SET state = 1 WHERE user_id = 1 OR message_id=1237576872989203;',function(err, result){
 				});
