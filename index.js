@@ -80,6 +80,9 @@ app.post('/webhook/', function (req, res) {
 		let sender = event.sender.id
 		if (event.message && event.message.text) {
 			let text = event.message.text;
+			if(text === 'hey' || 'hi' || 'whats up' || 'yo'){
+				sendTextMessage(sender, "Hey! Where are you trying to go? And at what time? e.g. UCSB, 01/28/2017")
+			}
 			if (text === 'Generic'){
 				var array = text.splice(',');
 				console.log("welcome to chatbot")
