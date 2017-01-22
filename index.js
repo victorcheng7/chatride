@@ -62,7 +62,7 @@ app.post('/webhook/', function (req, res) {
 	res.sendStatus(200)
 });
 
-
+/*
 const connectionString = process.env.DATABASE_URL;
 pg.connect(connectionString, function(err, client, done) {
 	console.log(err+"!!!!!!!!!!!!!!!");
@@ -72,7 +72,7 @@ pg.connect(connectionString, function(err, client, done) {
 		console.log(result.rows);
 	});
 });
-
+*/
 
 // recommended to inject access tokens as environmental variables, e.g.
 const token = process.env.RIDECHAT_TOKEN
