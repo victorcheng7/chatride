@@ -81,7 +81,8 @@ app.post('/webhook/', function (req, res) {
 		if (event.message && event.message.text) {
 			let text = event.message.text;
 			if(text === 'hey' || 'hi' || 'whats up' || 'yo'){
-				sendTextMessage(sender, "Hey! Where are you trying to go? And at what time? e.g. UCSB, 01/28/2017")
+				sendTextMessage(sender, "Hey! Where are you trying to go? And at what time? e.g. UCSB, 01/28/2017");
+				continue
 			}
 			if (text === 'Generic'){
 				var array = text.splice(',');
