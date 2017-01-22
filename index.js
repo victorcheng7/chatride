@@ -85,7 +85,6 @@ app.post('/webhook/', function (req, res) {
 				continue;
 			}
 			if (text === 'Generic'){
-				var array = text.splice(',');
 				console.log("welcome to chatbot")
 				sendGenericMessage(sender)
 				continue
