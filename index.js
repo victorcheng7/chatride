@@ -83,7 +83,7 @@ app.post('/webhook/', function (req, res) {
 		let sender = event.sender.id;
 		let state = 0;
 		console.log(sender);
-		pool.query('SELECT state FROM users WHERE message_id = $1' ,  [sender],  function (err, result) {
+		pool.query('SELECT state FROM users WHERE user_id = 1' ,  [sender],  function (err, result) {
 			//call `done()` to release the client back to the pool
 			console.log(result);
 			state = result.rows[0].state;
