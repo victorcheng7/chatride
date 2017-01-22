@@ -87,6 +87,7 @@ app.post('/webhook/', function (req, res) {
 
 		if (event.message && event.message.text) {
 			let text = event.message.text;
+			console.log(state);
 			if(state === 1){
 				console.log("hello");
 				var facebook_urls = [];
