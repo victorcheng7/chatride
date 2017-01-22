@@ -14,6 +14,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const request = require('request');
 const app = express();
+
+
 var  pg = require('pg');
 var config = {
 	user: 'gxtazabgagnnhg', //env var: PGUSER
@@ -31,14 +33,14 @@ pool.connect(function(err, client, done) {
 	if(err) {
 		return console.error('error fetching client from pool', err);
 	}
-	client.query('SELECT $1::int AS number', ['1'], function(err, result) {
+	client.query('SELECT facebook_url FROM users', function(err, result) {
 		//call `done()` to release the client back to the pool
 		done();
 
 		if(err) {
 			return console.error('error running query', err);
 		}
-		console.log(result.rows[0].number);
+		console.log(result.rows[0].facebook_url);
 		//output: 1
 	});
 });
@@ -77,8 +79,24 @@ app.post('/webhook/', function (req, res) {
 	let messaging_events = req.body.entry[0].messaging;
 	for (let i = 0; i < messaging_events.length; i++) {
 		let event = req.body.entry[0].messaging[i]
-		let sender = event.sender.id
+		let sender = event.sender.id;
+		console.log(sender);
 		if (event.message && event.message.text) {
+			pool.connect(function(err, client, done) {
+				if(err) {
+					return console.error('error fetching client from pool', err);
+				}
+				client.query('SELECT facebook_url FROM users', function(err, result) {
+					//call `done()` to release the client back to the pool
+					done();
+
+					if(err) {
+						return console.error('error running query', err);
+					}
+					console.log(result.rows[0].facebook_url);
+					//output: 1
+				});
+			});
 			let text = event.message.text;
 			if(text === 'hey' || text === 'hi' || text === 'whats up' || text ==='yo'){
 				sendTextMessage(sender, "Hey! Where are you trying to go? And at what time? e.g. UCSB, 01/28/2017");
