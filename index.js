@@ -80,29 +80,24 @@ app.post('/webhook/', function (req, res) {
 	for (let i = 0; i < messaging_events.length; i++) {
 		let event = req.body.entry[0].messaging[i]
 		let sender = event.sender.id;
-		console.log(sender);
+		let contacted = false;
+		client.query('SELECT contacted FROM users WHERE message_id =' + sender, function (err, result) {
+			//call `done()` to release the client back to the pool
+			console.log(result);
+			done();
+			if (err) {
+				return console.error('error running query', err);
+			}
+			//console.log(result.rows[0].facebook_url);
+			//contacted = false;
+		});
 		if (event.message && event.message.text) {
-			pool.connect(function(err, client, done) {
-				if(err) {
-					return console.error('error fetching client from pool', err);
-				}
-				client.query('SELECT facebook_url FROM users', function(err, result) {
-					//call `done()` to release the client back to the pool
-					done();
-
-					if(err) {
-						return console.error('error running query', err);
-					}
-					console.log(result.rows[0].facebook_url);
-					//output: 1
-				});
-			});
 			let text = event.message.text;
-			if(text === 'hey' || text === 'hi' || text === 'whats up' || text ==='yo'){
+			if (text === 'hey' || text === 'hi' || text === 'whats up' || text === 'yo') {
 				sendTextMessage(sender, "Hey! Where are you trying to go? And at what time? e.g. UCSB, 01/28/2017");
 				continue;
 			}
-			if (text === 'Generic'){
+			if (text === 'Generic') {
 				console.log("welcome to chatbot")
 				sendGenericMessage(sender)
 				continue
@@ -111,8 +106,7 @@ app.post('/webhook/', function (req, res) {
 		}
 		if (event.postback) {
 			let text = JSON.stringify(event.postback)
-			sendTextMessage(sender, "Postback received: "+text.substring(0, 200), token)
-			continue
+			sendTextMessage(sender, "Postback received: " + text.substring(0, 200), token)
 		}
 	}
 	res.sendStatus(200)
