@@ -81,7 +81,7 @@ app.post('/webhook/', function (req, res) {
 		let event = req.body.entry[0].messaging[i]
 		let sender = event.sender.id;
 		let contacted = false;
-		client.query('SELECT contacted FROM users WHERE message_id =' + sender, function (err, result) {
+		pool.query('SELECT contacted FROM users WHERE message_id =' + sender, function (err, result) {
 			//call `done()` to release the client back to the pool
 			console.log(result);
 			done();
