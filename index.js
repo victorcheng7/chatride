@@ -84,7 +84,7 @@ app.post('/webhook/', function (req, res) {
 		let state = 0;
 		pool.query('SELECT state FROM users WHERE message_id = $1' ,  [sender],  function (err, result) {
 			//call `done()` to release the client back to the pool
-			state = result.rows[0].contacted;
+			state = result.rows[0].state;
 		});
 		if (event.message && event.message.text) {
 			// IF statement logic to see what stage the bot is at.
