@@ -113,7 +113,6 @@ app.post('/webhook/', function (req, res) {
 					 */
 					//contacted = 1, message_id = that person, Facebook URL/id
 					//ALWAYS GOING TO BE NEW USER Final product -- query database to see if that user exists already, add user if not
-					continue;
 				}
 				sendTextMessage(sender, "Sorry not sure what you mean by " + text.substring(0, 200))
 			}
