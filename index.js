@@ -85,14 +85,23 @@ app.post('/webhook/', function (req, res) {
 			if (event.message && event.message.text) {
 				let text = event.message.text;
 				console.log(state);
-				if(state === 2){
+				if (text === 'hey' || text === 'hi' || text === 'whats up' || text === 'yo') {
+					sendTextMessage(sender, "Hey! Provide an address of where you're trying to go? And at what time? e.g. 324 Avalon Drive, CA, 2017-28-01");
+					pool.query('UPDATE users SET state = 1 WHERE message_id=$1;', [sender], function(err, result){
+					});
+					/*pool.query("INSERT INTO users (facebook_url, date, destination, origin, notified, route) VALUES ('https://www.facebook.com/aaron.veronese?fref=nf', '01/24/2017', POINT(0,0), POINT(0,1), 1, PATH(polygon '(34.414899, -119.84312), (0,0)'));" ,  function(err, result){
+					 });
+					 */
+					//contacted = 1, message_id = that person, Facebook URL/id
+					//ALWAYS GOING TO BE NEW USER Final product -- query database to see if that user exists already, add user if not
+				}
+				else if(state === 2){
 					//return possible recommendations for
 				}
-				if(state === 1){
+				else if(state === 1){
 					var facebook_urls = [];
 					var array = text.split(','); // send array[0] to esri API -- return coordinates, add array[1] IS DATE
-					console.log(array[1]);
-					console.log(array);
+					console.log(sender);
 					pool.query('UPDATE users SET state = 2 WHERE message_id=$1;',[sender],function(err, result){
 					});
 					pool.query('SELECT facebook_url, route FROM users WHERE date >= $1', [array[1]], function(err, result){
@@ -105,16 +114,6 @@ app.post('/webhook/', function (req, res) {
 					facebook_urls.forEach(function(element) {
 						sendTextMessage(sender, element);
 					});
-				}
-				else if (text === 'hey' || text === 'hi' || text === 'whats up' || text === 'yo') {
-					sendTextMessage(sender, "Hey! Provide an address of where you're trying to go? And at what time? e.g. 324 Avalon Drive, CA, 2017-28-01");
-					pool.query('UPDATE users SET state = 1 WHERE user_id = 1 OR message_id=1237576872989203;',function(err, result){
-					});
-					/*pool.query("INSERT INTO users (facebook_url, date, destination, origin, notified, route) VALUES ('https://www.facebook.com/aaron.veronese?fref=nf', '01/24/2017', POINT(0,0), POINT(0,1), 1, PATH(polygon '(34.414899, -119.84312), (0,0)'));" ,  function(err, result){
-					 });
-					 */
-					//contacted = 1, message_id = that person, Facebook URL/id
-					//ALWAYS GOING TO BE NEW USER Final product -- query database to see if that user exists already, add user if not
 				}
 				else {
 					sendTextMessage(sender, "Say hey, hi, whats up, or yo to activate me! ")
