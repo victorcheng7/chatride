@@ -79,21 +79,23 @@ app.post('/webhook/', function (req, res) {
 	for (let i = 0; i < messaging_events.length; i++) {
 		let event = req.body.entry[0].messaging[i];
 		let sender = event.sender.id;
-		//MAKE THIS sender and messenger_id
-		pool.query('SELECT state FROM users WHERE user_id = 1',  function (err, result) {
-			state = result.rows[0].state; // STATE IS NOT PROPERLY SET ON THE GLOBAL states
+		console.log(sender);
+		pool.query('SELECT state FROM users WHERE message_id = $1', [sender],  function (err, result) {
+			state = result.rows[0].state;
 			if (event.message && event.message.text) {
 				let text = event.message.text;
 				console.log(state);
+				if(state === 2){
+					//return possible recommendations for
+				}
 				if(state === 1){
-					console.log("hello");
 					var facebook_urls = [];
 					var array = text.split(','); // send array[0] to esri API -- return coordinates, add array[1] IS DATE
 					console.log(array[1]);
 					console.log(array);
-					pool.query('UPDATE users SET state = 2 WHERE user_id = 1 OR message_id=1793179830899605;',function(err, result){
+					pool.query('UPDATE users SET state = 2 WHERE message_id=$1;',[sender],function(err, result){
 					});
-					pool.query('SELECT facebook_url, route FROM users WHERE date=$1', [array[1].toString()], function(err, result){
+					pool.query('SELECT facebook_url, route FROM users WHERE date >= $1', [array[1]], function(err, result){
 						console.log(result);
 						//finalize facebook_urls with relevant algorithm
 					});
@@ -105,7 +107,7 @@ app.post('/webhook/', function (req, res) {
 					});
 				}
 				else if (text === 'hey' || text === 'hi' || text === 'whats up' || text === 'yo') {
-					sendTextMessage(sender, "Hey! Where are you trying to go? And at what time? e.g. UCSB, 2017-28-01");
+					sendTextMessage(sender, "Hey! Provide an address of where you're trying to go? And at what time? e.g. 324 Avalon Drive, CA, 2017-28-01");
 					pool.query('UPDATE users SET state = 1 WHERE user_id = 1 OR message_id=1237576872989203;',function(err, result){
 					});
 					/*pool.query("INSERT INTO users (facebook_url, date, destination, origin, notified, route) VALUES ('https://www.facebook.com/aaron.veronese?fref=nf', '01/24/2017', POINT(0,0), POINT(0,1), 1, PATH(polygon '(34.414899, -119.84312), (0,0)'));" ,  function(err, result){
@@ -114,7 +116,9 @@ app.post('/webhook/', function (req, res) {
 					//contacted = 1, message_id = that person, Facebook URL/id
 					//ALWAYS GOING TO BE NEW USER Final product -- query database to see if that user exists already, add user if not
 				}
-				sendTextMessage(sender, "Sorry not sure what you mean by " + text.substring(0, 200))
+				else {
+					sendTextMessage(sender, "Say hey, hi, whats up, or yo to activate me! ")
+				}
 			}
 		});
 		if (event.postback) {
