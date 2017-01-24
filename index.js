@@ -50,6 +50,7 @@ app.get('/webhook/', function (req, res) {
 
 // as long as the array.length === 0
 app.post('/webhook/', function (req, res) {
+	console.log(process.env.GOOGLE_MAPS_KEY);
 	var state = 0 ;
 	let messaging_events = req.body.entry[0].messaging;
 	for (let i = 0; i < messaging_events.length; i++) {

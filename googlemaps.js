@@ -29,7 +29,8 @@ var request = {
 };
 
 gmAPI.directions(request, function(err, result){
-    console.log(polyline.decode(result.routes[0].overview_polyline.points)); // for each element in the polyline array figure out if it is on the way or to your location
+    console.log(polyline.decode(result.routes[0].overview_polyline.points));
+    // for each element in the polyline array figure out if it is on the way or to your location
 });
 
 
