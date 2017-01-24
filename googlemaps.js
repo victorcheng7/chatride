@@ -5,7 +5,8 @@ var GoogleMapsAPI = require('googlemaps');
 var polyline = require('@mapbox/polyline');
 
 var publicConfig = {
-    key: 'AIzaSyBeWLtoD-PTsiqaI1QuPR5y1Vas2P3QStA',
+    //key: 'AIzaSyBeWLtoD-PTsiqaI1QuPR5y1Vas2P3QStA',
+    key: process.env.GOOGLE_MAPS_KEY,
     stagger_time:       1000, // for elevationPath
     encode_polylines:   false,
     secure:             true, // use https

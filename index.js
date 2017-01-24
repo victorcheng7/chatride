@@ -19,20 +19,6 @@ var config = {
 };
 var pool = new pg.Pool(config);
 
-pool.connect(function(err, client, done) {
-	if(err) {
-		return console.error('error fetching client from pool', err);
-	}
-	client.query('SELECT facebook_url FROM users', function(err, result) {
-		//call `done()` to release the client back to the pool
-		done();
-
-		if(err) {
-			return console.error('error running query', err);
-		}
-	});
-});
-
 pool.on('error', function (err, client) {
 	console.error('idle client error', err.message, err.stack)
 });
@@ -61,6 +47,8 @@ app.get('/webhook/', function (req, res) {
 	}
 });
 
+
+// as long as the array.length === 0
 app.post('/webhook/', function (req, res) {
 	var state = 0 ;
 	let messaging_events = req.body.entry[0].messaging;
@@ -81,7 +69,7 @@ app.post('/webhook/', function (req, res) {
 					 });
 					 */
 					//contacted = 1, message_id = that person, Facebook URL/id
-					//ALWAYS GOING TO BE NEW USER Final product -- query database to see if that user exists already, add user if not
+					//check if user exists, if it does update. If it doesn't insert a new user
 				}
 				else if(state === 2){
 					//return possible recommendations for
