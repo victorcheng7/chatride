@@ -1,13 +1,3 @@
-//This is still work in progress
-/*
-Please report any bugs to nicomwaks@gmail.com
-
-i have added console.log on line 48 
-
-
-
-
- */
 'use strict'
 
 const express = require('express');
@@ -40,8 +30,6 @@ pool.connect(function(err, client, done) {
 		if(err) {
 			return console.error('error running query', err);
 		}
-		//console.log(result.rows[0].facebook_url);
-		//output: 1
 	});
 });
 
@@ -99,7 +87,7 @@ app.post('/webhook/', function (req, res) {
 					//return possible recommendations for
 				}
 				else if(state === 1){
-					var facebook_urls = [];
+					var facebook_urls = []; // set
 					var array = text.split(','); // send array[0] to esri API -- return coordinates, add array[1] IS DATE
 					console.log(sender);
 					pool.query('UPDATE users SET state = 2 WHERE message_id=$1;',[sender],function(err, result){
@@ -116,7 +104,7 @@ app.post('/webhook/', function (req, res) {
 					});
 				}
 				else {
-					sendTextMessage(sender, "Say hey, hi, whats up, or yo to activate me! ")
+					sendTextMessage(sender, "Say 'hey' to activate me! ")
 				}
 			}
 		});
