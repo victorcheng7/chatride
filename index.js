@@ -50,18 +50,15 @@ app.get('/webhook/', function (req, res) {
 
 // as long as the array.length === 0
 app.post('/webhook/', function (req, res) {
-	console.log(process.env.GOOGLE_MAPS_KEY);
 	var state = 0 ;
 	let messaging_events = req.body.entry[0].messaging;
 	for (let i = 0; i < messaging_events.length; i++) {
 		let event = req.body.entry[0].messaging[i];
 		let sender = event.sender.id;
-		console.log(sender);
 		pool.query('SELECT state FROM users WHERE message_id = $1', [sender],  function (err, result) {
 			state = result.rows[0].state;
 			if (event.message && event.message.text) {
 				let text = event.message.text;
-				console.log(state);
 				if (text === 'hey' || text === 'hi' || text === 'whats up' || text === 'yo') {
 					sendTextMessage(sender, "Hey! Provide an address of where you're trying to go? And at what time? e.g. 324 Avalon Drive, CA, 2017-28-01");
 					pool.query('UPDATE users SET state = 1 WHERE message_id=$1;', [sender], function(err, result){
@@ -78,7 +75,6 @@ app.post('/webhook/', function (req, res) {
 				else if(state === 1){
 					var facebook_urls = []; // set
 					var array = text.split(','); // send array[0] to esri API -- return coordinates, add array[1] IS DATE
-					console.log(sender);
 					pool.query('UPDATE users SET state = 2 WHERE message_id=$1;',[sender],function(err, result){
 					});
 					pool.query('SELECT facebook_url, route FROM users WHERE date >= $1', [array[1]], function(err, result){
